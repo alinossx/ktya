@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Праздничный торт</title>
+  <link rel="stylesheet" href="style.css">
+  <link href="https://fonts.googleapis.com/css2?family=Pacifico&family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
+</head>
+<body class="page-cake">
+  <div class="confetti-container" id="confetti"></div>
+  
+  <h1 class="page-title-cake">С днём рождения! 🥳</h1>
+  
+  <div class="cake-area">
+    <div>
+      <div class="cake" id="cake" title="Кликни, чтобы съесть">🎂</div>
+      <div class="cake-hint" id="cakeHint">Кликни на торт, чтобы съесть</div>
+    </div>
+    
+    <div>
+      <div class="champagne" id="champagne" title="Кликни два раза">🥂</div>
+      <div class="cake-hint" id="champHint">Выпей за два клика</div>
+    </div>
+  </div>
+
+  <a href="gifts.html" class="btn btn-next" id="nextBtn" style="display:none; position:relative; z-index:5;">Открыть подарки →</a>
+
+  <script>
+    const confettiContainer = document.getElementById('confetti');
+    const cake = document.getElementById('cake');
+    const champagne = document.getElementById('champagne');
+    const nextBtn = document.getElementById('nextBtn');
+    const cakeHint = document.getElementById('cakeHint');
+    const champHint = document.getElementById('champHint');
+
+    let cakeEaten = false;
+    let champClicks = 0;
+
+    // Создаём конфетти и 🥳
+    const emojis = ['🎊', '🎉', '✨', '💖', '🥳', '🌟', '💫', '🎀', '🩷'];
+    
+    function createConfetti() {
+      for (let i = 0; i < 45; i++) {
+        const el = document.createElement('div');
+        el.textContent = emojis[Math.floor(Math.random() * emojis.length)];
+        el.style.position = 'absolute';
+        el.style.left = Math.random() * 100 + '%';
+        el.style.top = '-40px';
+        el.style.fontSize = (16 + Math.random() * 22) + 'px';
+        el.style.opacity = 0.85;
+        el.style.pointerEvents = 'none';
+        el.style.zIndex = 10;
+        
+        const duration = 4 + Math.random() * 5;
+        const delay = Math.random() * 6;
+        const drift = (Math.random() - 0.5) * 200;
+        
+        el.style.animation = `fall ${duration}s linear ${delay}s infinite`;
+        
+        // Добавляем keyframes динамически
+        const style = document.createElement('style');
+        style.textContent = `
+          @keyframes fall {
+            0% { transform: translateY(0) translateX(0) rotate(0deg); opacity: 0.9; }
+            100% { transform: translateY(110vh) translateX(${drift}px) rotate(720deg); opacity: 0.2; }
+          }
+        `;
+        document.head.appendChild(style);
+        
+        confettiContainer.appendChild(el);
+      }
+    }
+    
+    createConfetti();
+
+    // Торт
+    cake.addEventListener('click', () => {
+      if (cakeEaten) return;
+      cakeEaten = true;
+      cake.classList.add('eaten');
+      cakeHint.textContent = 'Вкусно! 😋';
+      checkDone();
+    });
+
+    // Шампанское (2 клика)
+    champagne.addEventListener('click', () => {
+      champClicks++;
+      if (champClicks === 1) {
+        champagne.classList.add('half');
+        champHint.textContent = 'Ещё один глоток...';
+      } else if (champClicks >= 2) {
+        champagne.classList.remove('half');
+        champagne.classList.add('empty');
+        champHint.textContent = 'Выпито! 🥂';
+        checkDone();
+      }
+    });
+
+    function checkDone() {
+      if (cakeEaten && champClicks >= 2) {
+        setTimeout(() => {
+          nextBtn.style.display = 'inline-block';
+        }, 700);
+      }
+    }
+  </script>
+</body>
+</html>

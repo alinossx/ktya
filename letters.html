@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Письма для тебя</title>
+  <link rel="stylesheet" href="style.css">
+  <link href="https://fonts.googleapis.com/css2?family=Pacifico&family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
+</head>
+<body class="page-letters">
+  <div class="sun"></div>
+  
+  <h1 class="letters-title">Письма, которые написали для тебя</h1>
+  
+  <div class="letters-wrapper" id="lettersWrapper">
+    
+    <div class="letter" data-delay="0">
+      <div class="letter-from">🦉 Альбус Дамблдор</div>
+      <div class="letter-text">
+        Дорогая Катенька,<br><br>
+        В этом мире есть вещи гораздо важнее, чем магия. Одна из них — люди, которые остаются в сердце даже на большом расстоянии. 
+        Пусть этот день рождения напомнит тебе, насколько ты ценна. Свет, который ты несёшь, способен разгонять любую тьму.<br><br>
+        С теплом и верой в тебя,
+      </div>
+      <div class="letter-signature">— Альбус Дамблдор</div>
+    </div>
+
+    <div class="letter" data-delay="1">
+      <div class="letter-from">🐺 Ремус Люпин</div>
+      <div class="letter-text">
+        Катя,<br><br>
+        Я знаю, каково это — чувствовать себя немного «другой». Но именно в этом и есть твоя сила. 
+        Пусть в этот день тебя окружают те, кто принимает тебя такой, какая ты есть. А если рядом никого нет — знай, 
+        что где-то далеко есть те, кто думает о тебе с огромной нежностью.<br><br>
+        Береги себя.
+      </div>
+      <div class="letter-signature">— Ремус Люпин</div>
+    </div>
+
+    <div class="letter" data-delay="2">
+      <div class="letter-from">🐶 Сириус Блэк</div>
+      <div class="letter-text">
+        Эй, Катенька!<br><br>
+        День рождения — это повод устроить настоящий хаос (хороший хаос, конечно). 
+        Желаю тебе столько свободы, сколько ты сама захочешь, и чтобы никто никогда не пытался тебя «исправить». 
+        Ты уже идеальная. А если кто-то скажет иначе — отправь его к Чёрному.<br><br>
+        С любовью и немного хулиганством,
+      </div>
+      <div class="letter-signature">— Сириус Блэк</div>
+    </div>
+
+    <div class="letter" data-delay="3">
+      <div class="letter-from">⚡ Золотое трио</div>
+      <div class="letter-text">
+        <b>Гарри:</b> С днём рождения! Пусть этот год будет полон приключений, но без дементоров.<br><br>
+        <b>Гермиона:</b> Желаю тебе мудрости, смелости и очень-очень много хороших книг. И помни — настоящие друзья всегда найдут способ быть рядом.<br><br>
+        <b>Рон:</b> И чтобы еды было много. И чтобы всё получалось. Ты крутая, Катя. Честно.
+      </div>
+      <div class="letter-signature">— Гарри, Гермиона и Рон</div>
+    </div>
+
+  </div>
+
+  <div style="text-align:center; margin-top:30px; position:relative; z-index:2;">
+    <a href="cake.html" class="btn btn-next" id="nextBtn" style="opacity:0; pointer-events:none;">Дальше к торту →</a>
+  </div>
+
+  <script>
+    const letters = document.querySelectorAll('.letter');
+    const nextBtn = document.getElementById('nextBtn');
+    
+    letters.forEach((letter, index) => {
+      setTimeout(() => {
+        letter.classList.add('visible');
+        
+        // После последнего письма показываем кнопку
+        if (index === letters.length - 1) {
+          setTimeout(() => {
+            nextBtn.style.opacity = '1';
+            nextBtn.style.pointerEvents = 'auto';
+            nextBtn.style.transition = 'opacity 0.8s ease';
+          }, 1200);
+        }
+      }, 900 + index * 2200); // Появляются друг за другом
+    });
+  </script>
+</body>
+</html>

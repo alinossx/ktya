@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>The Red Means I Love You</title>
+  <link rel="stylesheet" href="style.css">
+  <link href="https://fonts.googleapis.com/css2?family=Pacifico&family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
+</head>
+<body class="page-gothic">
+  <div class="gothic-content">
+    <div class="song-title">The Red Means I Love You</div>
+    
+    <div class="lyrics-box" id="lyricsBox">
+      <!-- Lyrics will be injected -->
+    </div>
+
+    <div class="rose-container" id="roseContainer">
+      <div class="rose" id="rose" title="Забрать розу">🌹</div>
+      <div class="rose-hint">Нажми, чтобы забрать розу</div>
+    </div>
+
+    <a href="letters.html" class="btn btn-next" id="nextBtn" style="display:none; margin-top:40px;">Дальше →</a>
+    
+    <p class="audio-note">Положи файл <b>music.mp3</b> рядом с сайтом, чтобы заиграла песня</p>
+  </div>
+
+  <audio id="song" preload="auto">
+    <source src="music.mp3" type="audio/mpeg">
+  </audio>
+
+  <script>
+    const lyrics = [
+      { en: "Unusual", ru: "Необычная", chorus: false },
+      { en: "They say strange fascination, infatuation", ru: "Говорят — странное увлечение, влюблённость", chorus: false },
+      { en: "A lunatic", ru: "Лунатик", chorus: false },
+      { en: "Call me what suits your taste, I just wanna taste", ru: "Называй как хочешь, я просто хочу попробовать", chorus: false },
+      { en: "And I've always heard it's what's inside that counts", ru: "И я всегда слышала, что важно то, что внутри", chorus: false },
+      { en: "Cause my insides are red, and yours are too", ru: "Потому что моё нутро красное, и твоё тоже", chorus: false },
+      { en: "And the red on my face is matching you", ru: "И красное на моём лице совпадает с тобой", chorus: false },
+      { en: "And goodness, you're bleeding, what a wonderful feeling", ru: "Боже, ты истекаешь кровью — какое чудесное чувство", chorus: false },
+      { en: "You're down, and you're pleading, my head is just reeling", ru: "Ты упал и умоляешь, а у меня кружится голова", chorus: false },
+      { en: "The red means I love you", ru: "Красное значит — я люблю тебя", chorus: true },
+      { en: "Tasting your blood means I love you", ru: "Вкус твоей крови значит — я люблю тебя", chorus: true },
+      { en: "The red means I love you", ru: "Красное значит — я люблю тебя", chorus: true },
+      { en: "The red means I love you", ru: "Красное значит — я люблю тебя", chorus: true },
+      { en: "Unfortunate", ru: "Несчастная", chorus: false },
+      { en: "They say such a shame, I turned out this way", ru: "Говорят — какая жалость, что я стала такой", chorus: false },
+      { en: "A maniac", ru: "Маньячка", chorus: false },
+      { en: "Well, yeah, I get manic when I cause a panic", ru: "Ну да, я впадаю в манию, когда вызываю панику", chorus: false },
+      { en: "And of course I'm excited when I see you around", ru: "И конечно я взволнована, когда вижу тебя рядом", chorus: false },
+      { en: "You leave me high and dry", ru: "Ты оставляешь меня на произвол судьбы", chorus: false },
+      { en: "A rush comes to my mind", ru: "Волна накрывает мой разум", chorus: false },
+      { en: "At the drops of blood you leave behind", ru: "От капель крови, что ты оставляешь", chorus: false },
+      { en: "Run as you might, my love will never, ever stop", ru: "Беги сколько хочешь — моя любовь никогда не остановится", chorus: false },
+    ];
+
+    const box = document.getElementById('lyricsBox');
+    const roseContainer = document.getElementById('roseContainer');
+    const rose = document.getElementById('rose');
+    const nextBtn = document.getElementById('nextBtn');
+    const audio = document.getElementById('song');
+
+    let currentIndex = 0;
+    let songStarted = false;
+
+    // Создаём строки
+    lyrics.forEach((line, i) => {
+      const div = document.createElement('div');
+      div.className = 'lyric-line' + (line.chorus ? ' chorus' : '');
+      div.id = 'line-' + i;
+      div.innerHTML = line.en + '<div class="translation" id="tr-' + i + '">' + line.ru + '</div>';
+      box.appendChild(div);
+    });
+
+    function showNextLine() {
+      if (currentIndex >= lyrics.length) {
+        // Песня закончилась (или все строки показаны)
+        setTimeout(() => {
+          roseContainer.classList.add('show');
+        }, 1200);
+        return;
+      }
+
+      const line = document.getElementById('line-' + currentIndex);
+      const tr = document.getElementById('tr-' + currentIndex);
+      
+      // Скрываем предыдущие, если их слишком много
+      if (currentIndex > 4) {
+        const old = document.getElementById('line-' + (currentIndex - 5));
+        if (old) {
+          old.style.opacity = '0.15';
+          old.style.transform = 'scale(0.95)';
+        }
+      }
+
+      line.classList.add('visible');
+      setTimeout(() => tr.classList.add('visible'), 300);
+
+      currentIndex++;
+      
+      // Интервал между строками (подстраивается под примерную длину песни ~3:50)
+      const delay = currentIndex < 10 ? 2800 : (currentIndex < 18 ? 3200 : 3500);
+      setTimeout(showNextLine, delay);
+    }
+
+    // Запуск
+    function startExperience() {
+      if (songStarted) return;
+      songStarted = true;
+      
+      audio.play().catch(() => {
+        // Автоплей заблокирован — всё равно показываем текст
+        console.log('Автовоспроизведение заблокировано браузером. Кликни куда-нибудь.');
+      });
+      
+      setTimeout(showNextLine, 800);
+    }
+
+    // Пробуем сразу, а также по первому клику/тачу
+    window.addEventListener('load', () => {
+      setTimeout(startExperience, 600);
+    });
+    
+    document.body.addEventListener('click', startExperience, { once: true });
+    document.body.addEventListener('touchstart', startExperience, { once: true });
+
+    // Когда аудио реально закончится
+    audio.addEventListener('ended', () => {
+      if (!roseContainer.classList.contains('show')) {
+        roseContainer.classList.add('show');
+      }
+    });
+
+    // Забрать розу
+    rose.addEventListener('click', () => {
+      rose.classList.add('taken');
+      setTimeout(() => {
+        nextBtn.style.display = 'inline-block';
+        nextBtn.style.animation = 'fadeIn 0.6s ease';
+      }, 600);
+    });
+
+    // Если пользователь долго ждёт — всё равно показать розу
+    setTimeout(() => {
+      if (!roseContainer.classList.contains('show')) {
+        roseContainer.classList.add('show');
+      }
+    }, 95000); // ~1.5 минуты запас
+  </script>
+</body>
+</html>

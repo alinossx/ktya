@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Готова получить свой подарок?</title>
+  <link rel="stylesheet" href="style.css">
+  <link href="https://fonts.googleapis.com/css2?family=Pacifico&family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
+</head>
+<body class="page-home">
+  <div class="bg-particles" id="bgParticles"></div>
+  
+  <div class="container">
+    <h1 class="main-title">Готова получить свой подарок?</h1>
+    
+    <div class="heart-container">
+      <canvas id="heartCanvas"></canvas>
+    </div>
+    
+    <a href="gothic.html" class="btn-main">получить подарок</a>
+  </div>
+
+  <script src="heart.js"></script>
+  <script>
+    // Лёгкие праздничные частицы на фоне
+    const bg = document.getElementById('bgParticles');
+    for (let i = 0; i < 40; i++) {
+      const p = document.createElement('div');
+      p.className = 'particle';
+      p.style.left = Math.random() * 100 + '%';
+      p.style.top = Math.random() * 100 + '%';
+      p.style.animationDelay = Math.random() * 5 + 's';
+      p.style.animationDuration = (3 + Math.random() * 4) + 's';
+      bg.appendChild(p);
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Для Катеньки</title>
+  <link rel="stylesheet" href="style.css">
+  <link href="https://fonts.googleapis.com/css2?family=Pacifico&family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
+</head>
+<body class="page-final">
+  <div class="final-card">
+    <div class="final-hearts">❤️</div>
+    
+    <div class="final-text">
+      <strong>Катенька</strong>, я поздравляю тебя с днём рождения, желаю самого лучшего и прекрасного и хочу что бы ты помнила, не смотря на наше расстояние ты всегда будешь человеком которого я люблю, ценю и помню вне зависимости где нахожусь. Все что со мной происходит наводит на мысли о тебе и времени что мы вместе проводили. Ты будешь навсегда в моем сердце. ❤️
+    </div>
+    
+    <div class="final-signature">С любовью</div>
+  </div>
+
+  <script>
+    // Лёгкие плавающие сердечки
+    for (let i = 0; i < 18; i++) {
+      const heart = document.createElement('div');
+      heart.textContent = ['❤️', '💕', '💗', '💖'][Math.floor(Math.random() * 4)];
+      heart.style.position = 'fixed';
+      heart.style.left = Math.random() * 100 + '%';
+      heart.style.top = Math.random() * 100 + '%';
+      heart.style.fontSize = (14 + Math.random() * 20) + 'px';
+      heart.style.opacity = 0.25 + Math.random() * 0.35;
+      heart.style.pointerEvents = 'none';
+      heart.style.zIndex = 1;
+      heart.style.animation = `floatHeart ${6 + Math.random() * 8}s ease-in-out infinite`;
+      heart.style.animationDelay = Math.random() * 5 + 's';
+      document.body.appendChild(heart);
+    }
+
+    const style = document.createElement('style');
+    style.textContent = `
+      @keyframes floatHeart {
+        0%, 100% { transform: translateY(0) rotate(0deg); }
+        50% { transform: translateY(-30px) rotate(15deg); }
+      }
+    `;
+    document.head.appendChild(style);
+  </script>
+</body>
+</html>

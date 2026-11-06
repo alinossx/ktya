@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Подарки</title>
+  <link rel="stylesheet" href="style.css">
+  <link href="https://fonts.googleapis.com/css2?family=Pacifico&family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
+</head>
+<body class="page-gifts">
+  <h1 class="gifts-title">Открой свои подарки 🎁</h1>
+  
+  <div class="gifts-grid" id="giftsGrid">
+    <!-- gifts will be generated -->
+  </div>
+
+  <div style="text-align:center;">
+    <a href="final.html" class="btn btn-next" id="nextBtn" style="opacity:0; pointer-events:none;">Читать послание →</a>
+  </div>
+
+  <script>
+    const giftsData = [
+      { emoji: '🎁', label: 'Коробка №1' },
+      { emoji: '🎀', label: 'Сюрприз' },
+      { emoji: '💝', label: 'От сердца' },
+      { emoji: '📦', label: 'Большой' },
+      { emoji: '🧧', label: 'Красный' },
+      { emoji: '🛍️', label: 'Сюрприз 2' },
+      { emoji: '✨', label: 'Волшебный' },
+      { emoji: '🌟', label: 'Звёздный' },
+    ];
+
+    const lootItems = ['💵', '💰', '🪙', '💎', '👑', '🏆', '💍', '🥇', '💸', '💴', '💶', '💷', '🤑'];
+    
+    const grid = document.getElementById('giftsGrid');
+    const nextBtn = document.getElementById('nextBtn');
+    let openedCount = 0;
+
+    giftsData.forEach((g, index) => {
+      const div = document.createElement('div');
+      div.className = 'gift';
+      div.innerHTML = `
+        <div class="gift-emoji">${g.emoji}</div>
+        <div class="gift-label">${g.label}</div>
+      `;
+      
+      div.addEventListener('click', function() {
+        if (this.classList.contains('opened')) return;
+        
+        this.classList.add('opened');
+        openedCount++;
+        
+        // Сыпем лут
+        for (let i = 0; i < 8; i++) {
+          const loot = document.createElement('div');
+          loot.className = 'loot';
+          loot.textContent = lootItems[Math.floor(Math.random() * lootItems.length)];
+          
+          const rect = this.getBoundingClientRect();
+          loot.style.left = (rect.left + rect.width/2) + 'px';
+          loot.style.top = (rect.top + rect.height/2) + 'px';
+          loot.style.position = 'fixed';
+          
+          const tx = (Math.random() - 0.5) * 280;
+          const ty = -80 - Math.random() * 180;
+          loot.style.setProperty('--tx', tx + 'px');
+          loot.style.setProperty('--ty', ty + 'px');
+          
+          document.body.appendChild(loot);
+          
+          setTimeout(() => loot.remove(), 1300);
+        }
+        
+        // Меняем эмодзи на открытый
+        this.querySelector('.gift-emoji').textContent = '✨';
+        this.querySelector('.gift-label').textContent = 'Открыто!';
+        
+        if (openedCount >= giftsData.length) {
+          setTimeout(() => {
+            nextBtn.style.opacity = '1';
+            nextBtn.style.pointerEvents = 'auto';
+            nextBtn.style.transition = 'opacity 0.7s ease';
+          }, 800);
+        }
+      });
+      
+      grid.appendChild(div);
+    });
+  </script>
+</body>
+</html>
