@@ -6,21 +6,122 @@
   <title>The Red Means I Love You</title>
   <link rel="stylesheet" href="style.css">
   <link href="https://fonts.googleapis.com/css2?family=Pacifico&family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    .page-gothic {
+      overflow: hidden;
+      height: 100vh;
+      height: 100dvh;
+    }
+    
+    .gothic-content {
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      padding: 20px 16px;
+      box-sizing: border-box;
+    }
+    
+    .lyrics-box {
+      min-height: 180px;
+      max-height: 42vh;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      width: 100%;
+      max-width: 640px;
+      margin-bottom: 16px;
+    }
+    
+    .lyric-line {
+      font-size: clamp(1rem, 3.8vw, 1.4rem);
+      margin: 6px 0;
+      opacity: 0;
+      transform: translateY(12px);
+      transition: all 0.55s ease;
+      line-height: 1.4;
+    }
+    
+    .lyric-line.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    
+    .lyric-line.fading {
+      opacity: 0;
+      transform: translateY(-10px);
+    }
+    
+    .lyric-line.chorus {
+      color: #ff6b8a;
+      font-weight: 600;
+      font-size: clamp(1.1rem, 4.2vw, 1.55rem);
+    }
+    
+    .translation {
+      font-size: 0.78rem;
+      color: rgba(200, 160, 170, 0.55);
+      margin-top: 3px;
+      font-style: italic;
+      opacity: 0;
+      transition: opacity 0.45s ease;
+    }
+    
+    .translation.visible {
+      opacity: 1;
+    }
+    
+    .skip-btn {
+      margin-top: 12px;
+      padding: 10px 28px;
+      font-size: 0.95rem;
+      background: rgba(180, 40, 70, 0.35);
+      border: 1px solid rgba(255, 100, 130, 0.4);
+      color: #ffb0c0;
+      border-radius: 30px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+    
+    .skip-btn:hover {
+      background: rgba(200, 50, 80, 0.55);
+      color: #fff;
+    }
+    
+    .rose-container {
+      margin-top: 10px;
+    }
+    
+    .audio-note {
+      font-size: 0.75rem;
+      margin-top: 12px;
+      opacity: 0.5;
+    }
+    
+    .song-title {
+      margin-bottom: 18px;
+      font-size: 1.35rem;
+    }
+  </style>
 </head>
 <body class="page-gothic">
   <div class="gothic-content">
     <div class="song-title">The Red Means I Love You</div>
     
     <div class="lyrics-box" id="lyricsBox">
-      <!-- Lyrics will be injected -->
+      <!-- текущие строки будут здесь -->
     </div>
+
+    <button class="skip-btn" id="skipBtn">Пропустить →</button>
 
     <div class="rose-container" id="roseContainer">
       <div class="rose" id="rose" title="Забрать розу">🌹</div>
       <div class="rose-hint">Нажми, чтобы забрать розу</div>
     </div>
 
-    <a href="letters.html" class="btn btn-next" id="nextBtn" style="display:none; margin-top:40px;">Дальше →</a>
+    <a href="letters.html" class="btn btn-next" id="nextBtn" style="display:none; margin-top:20px;">Дальше →</a>
     
     <p class="audio-note">Положи файл <b>music.mp3</b> рядом с сайтом, чтобы заиграла песня</p>
   </div>
@@ -59,94 +160,105 @@
     const roseContainer = document.getElementById('roseContainer');
     const rose = document.getElementById('rose');
     const nextBtn = document.getElementById('nextBtn');
+    const skipBtn = document.getElementById('skipBtn');
     const audio = document.getElementById('song');
 
     let currentIndex = 0;
     let songStarted = false;
+    let finished = false;
+    let timer = null;
 
-    // Создаём строки
-    lyrics.forEach((line, i) => {
+    const MAX_VISIBLE = 4;
+
+    function createLineElement(line) {
       const div = document.createElement('div');
       div.className = 'lyric-line' + (line.chorus ? ' chorus' : '');
-      div.id = 'line-' + i;
-      div.innerHTML = line.en + '<div class="translation" id="tr-' + i + '">' + line.ru + '</div>';
-      box.appendChild(div);
-    });
+      div.innerHTML = line.en + '<div class="translation">' + line.ru + '</div>';
+      return div;
+    }
 
     function showNextLine() {
-      if (currentIndex >= lyrics.length) {
-        // Песня закончилась (или все строки показаны)
-        setTimeout(() => {
-          roseContainer.classList.add('show');
-        }, 1200);
+      if (finished || currentIndex >= lyrics.length) {
+        finishSong();
         return;
       }
 
-      const line = document.getElementById('line-' + currentIndex);
-      const tr = document.getElementById('tr-' + currentIndex);
-      
-      // Скрываем предыдущие, если их слишком много
-      if (currentIndex > 4) {
-        const old = document.getElementById('line-' + (currentIndex - 5));
-        if (old) {
-          old.style.opacity = '0.15';
-          old.style.transform = 'scale(0.95)';
-        }
+      const lineData = lyrics[currentIndex];
+      const el = createLineElement(lineData);
+      box.appendChild(el);
+
+      requestAnimationFrame(() => {
+        el.classList.add('visible');
+        setTimeout(() => {
+          const tr = el.querySelector('.translation');
+          if (tr) tr.classList.add('visible');
+        }, 250);
+      });
+
+      const lines = box.querySelectorAll('.lyric-line');
+      if (lines.length > MAX_VISIBLE) {
+        const old = lines[0];
+        old.classList.add('fading');
+        setTimeout(() => old.remove(), 500);
       }
 
-      line.classList.add('visible');
-      setTimeout(() => tr.classList.add('visible'), 300);
-
       currentIndex++;
-      
-      // Интервал между строками (подстраивается под примерную длину песни ~3:50)
-      const delay = currentIndex < 10 ? 2800 : (currentIndex < 18 ? 3200 : 3500);
-      setTimeout(showNextLine, delay);
+
+      const delay = currentIndex < 10 ? 2600 : (currentIndex < 18 ? 3000 : 3400);
+      timer = setTimeout(showNextLine, delay);
     }
 
-    // Запуск
+    function finishSong() {
+      if (finished) return;
+      finished = true;
+      clearTimeout(timer);
+      
+      const lines = box.querySelectorAll('.lyric-line');
+      lines.forEach((l, i) => {
+        setTimeout(() => {
+          l.classList.add('fading');
+          setTimeout(() => l.remove(), 450);
+        }, i * 80);
+      });
+
+      setTimeout(() => {
+        roseContainer.classList.add('show');
+        skipBtn.style.display = 'none';
+      }, 700);
+    }
+
     function startExperience() {
       if (songStarted) return;
       songStarted = true;
       
-      audio.play().catch(() => {
-        // Автоплей заблокирован — всё равно показываем текст
-        console.log('Автовоспроизведение заблокировано браузером. Кликни куда-нибудь.');
-      });
-      
-      setTimeout(showNextLine, 800);
+      audio.play().catch(() => {});
+      setTimeout(showNextLine, 600);
     }
 
-    // Пробуем сразу, а также по первому клику/тачу
+    skipBtn.addEventListener('click', () => {
+      audio.pause();
+      finishSong();
+    });
+
     window.addEventListener('load', () => {
-      setTimeout(startExperience, 600);
+      setTimeout(startExperience, 500);
     });
     
     document.body.addEventListener('click', startExperience, { once: true });
     document.body.addEventListener('touchstart', startExperience, { once: true });
 
-    // Когда аудио реально закончится
-    audio.addEventListener('ended', () => {
-      if (!roseContainer.classList.contains('show')) {
-        roseContainer.classList.add('show');
-      }
-    });
+    audio.addEventListener('ended', finishSong);
 
-    // Забрать розу
+    setTimeout(() => {
+      if (!finished) finishSong();
+    }, 90000);
+
     rose.addEventListener('click', () => {
       rose.classList.add('taken');
       setTimeout(() => {
         nextBtn.style.display = 'inline-block';
-        nextBtn.style.animation = 'fadeIn 0.6s ease';
-      }, 600);
+      }, 550);
     });
-
-    // Если пользователь долго ждёт — всё равно показать розу
-    setTimeout(() => {
-      if (!roseContainer.classList.contains('show')) {
-        roseContainer.classList.add('show');
-      }
-    }, 95000); // ~1.5 минуты запас
   </script>
 </body>
 </html>
